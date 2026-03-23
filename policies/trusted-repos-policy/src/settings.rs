@@ -277,9 +277,7 @@ impl Tags {
             .reject
             .iter()
             .filter(|tag| match tag {
-                TagMatcher::Exact(t) => {
-                    Reference::from_str(format!("hello:{t}").as_str()).is_err()
-                }
+                TagMatcher::Exact(t) => Reference::from_str(format!("hello:{t}").as_str()).is_err(),
                 TagMatcher::Pattern { raw, .. } => raw.is_empty(),
             })
             .map(|tag| tag.raw().to_string())

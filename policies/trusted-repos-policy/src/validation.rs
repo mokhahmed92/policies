@@ -150,11 +150,10 @@ fn image_matches_any(image_ref: &ImageRef, matchers: &HashSet<ImageMatcher>) -> 
 
             // Loose match: registry + repository (without tag or digest)
             let registry_repo = format!("{}/{}", image_ref.registry(), image_ref.repository());
-            let contained_in_set_with_registry_plus_repo = Reference::from_str(&registry_repo)
+            Reference::from_str(&registry_repo)
                 .ok()
                 .map(|r| &ImageRef::new(r) == exact_ref)
-                .unwrap_or(false);
-            contained_in_set_with_registry_plus_repo
+                .unwrap_or(false)
         }
         ImageMatcher::Pattern { pattern, raw } => {
             let whole = image_ref.whole();
@@ -204,10 +203,8 @@ fn is_allowed_image(image_ref: &ImageRef, settings: &Settings) -> bool {
         return true;
     }
 
-    if !settings.images.reject.is_empty() {
-        if image_matches_any(image_ref, &settings.images.reject) {
-            return false;
-        }
+    if !settings.images.reject.is_empty() && image_matches_any(image_ref, &settings.images.reject) {
+        return false;
     }
 
     if !settings.images.allow.is_empty() {
